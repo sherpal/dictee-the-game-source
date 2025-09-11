@@ -1,0 +1,12 @@
+target/
+.bsp/
+.idea/
+.DS_Store
+dist
+node_modules/
+
+scala-metadata.js
+.bloop/
+metals.sbt
+.metals/
+.vscode/
