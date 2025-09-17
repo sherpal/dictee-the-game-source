@@ -46,8 +46,9 @@ class LoadingScene(
       viewModel: SceneViewModel
   ): Outcome[SceneUpdateFragment] =
     val text = model match
-      case NotStarted()           => "Loading..."
-      case InProgress(percentage) => s"Loading... $percentage %"
+      case NotStarted()           => "On se prépare..."
+      case InProgress(100)        => "Tout est chargé, on finalise les détails..."
+      case InProgress(percentage) => s"Chargement des images... $percentage %"
       case game.scenes.loading.LoadingState.Error(key, message) =>
         s"Outch, something went wrong: $key $message"
 
