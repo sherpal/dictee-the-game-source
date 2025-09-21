@@ -164,6 +164,23 @@ class InGameScene(
           makeParallax(skyFrontMountain, 40) ++
           makeParallax(skyCloudFloor2, 60) ++
           makeParallax(skyCloudFloor, 80)
+      case Background.Moon =>
+        import Asset.ingame.parallax.moon.*
+        makeParallax(moonSky, 1) ++
+          makeParallax(moonEarth, 2) ++
+          makeParallax(moonBack, 20) ++
+          makeParallax(moonMid, 60) ++
+          makeParallax(moonFront, 100) ++
+          makeParallax(moonFloor, 1400)
+      case Background.Ocean =>
+        import Asset.ingame.parallax.ocean.*
+
+        makeParallax(oceanSea, 80) ++
+          makeParallax(oceanSkyAndSun, -2) ++
+          makeParallax(oceanClouds, 30) ++
+          makeParallax(oceanBackMountain, 35) ++
+          makeParallax(oceanSand, 100) ++
+          makeParallax(oceanWave, 120)
   }
 
   def ship(screenSize: Size, lastPlayerHit: Option[Seconds], time: Seconds) = {
@@ -190,7 +207,7 @@ class InGameScene(
     Batch[SceneNode](clip)
   }
 
-  def drawEnemies(state: GameState, screenSize: Size) = {
+  def drawEnemies(state: GameState, screenSize: Size, textColour: Fonts.AllowedColor) = {
     import game.gameutils.gameToLocal
     import assets.fonts.Fonts
 
@@ -210,8 +227,8 @@ class InGameScene(
             .withScale(Vector2(0.2)),
           Text(
             enemy.words.headOption.mkString,
-            Fonts.fontKeys(Fonts.black, Fonts.l),
-            Material.Bitmap(Fonts.assetNames(Fonts.black, Fonts.l))
+            Fonts.fontKeys(textColour, Fonts.l),
+            Material.Bitmap(Fonts.assetNames(textColour, Fonts.l))
           )
             .withPosition(wordPosition)
             .withAlignment(TextAlignment.Left),
@@ -305,7 +322,7 @@ class InGameScene(
         background(context.startUpData.background, context.frame.time.running, context.frame.screenSize) ++
           ship(context.frame.screenSize, viewModel.lastPlayerHit, context.frame.time.running) ++
           drawExplosions(viewModel.previouslyKilledShips, context.frame.time.running, context.frame.screenSize) ++
-          drawEnemies(model.state, context.frame.screenSize) ++
+          drawEnemies(model.state, context.frame.screenSize, context.startUpData.background.textColour) ++
           displayPlayerInfo(model.state, context.frame.screenSize)
       )
     )

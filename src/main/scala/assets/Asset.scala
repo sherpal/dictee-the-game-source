@@ -157,7 +157,7 @@ object Asset {
       object skies {
         private val skiesP = parallaxP / "skies"
 
-        def a(name: String) = Asset(skiesP / ("sky_" ++ name ++ ".png"), 1900, 1000)
+        private def a(name: String) = Asset(skiesP / ("sky_" ++ name ++ ".png"), 1900, 1000)
 
         val skyBackMountain  = a("back_mountain")
         val skyCloudFloor2   = a("cloud_floor_2")
@@ -168,6 +168,34 @@ object Asset {
         val skyFrontMountain = a("front_mountain")
         val skyMoon          = Asset(skiesP / "sky_moon.png", 3800, 2400)
         val skySky           = a("sky")
+      }
+
+      object moon {
+        private val moonP = parallaxP / "moon"
+
+        private def a(name: String, width: Int) = Asset(moonP / ("moon_" ++ name ++ ".png"), width, 1000)
+
+        val moonBack  = a("back", 3800)
+        val moonEarth = a("earth", 3800)
+        val moonFloor = a("floor", 1900)
+        val moonFront = a("front", 3800)
+        val moonMid   = a("mid", 3800)
+        val moonSky   = a("sky", 1900)
+      }
+
+      object ocean {
+        private val oceanP = parallaxP / "Ocean"
+
+        private def a(name: String) = Asset(oceanP / (name ++ ".png"), 3800, 1200)
+
+        val oceanSkyAndSun    = a("0 ocean sky and sun")
+        val oceanSea          = a("1 ocean sea")
+        val oceanSunLight     = a("2 ocean sun light")
+        val oceanClouds       = a("3 ocean clouds")
+        val oceanBackMountain = a("4 ocean back mountain")
+        val oceanSand         = a("5 ocean sand")
+        val oceanWave         = a("6 ocean wave")
+
       }
 
     }
@@ -219,6 +247,12 @@ object Asset {
       ()
     case Background.Sky =>
       ingame.parallax.skies
+      ()
+    case Background.Moon =>
+      ingame.parallax.moon
+      ()
+    case Background.Ocean =>
+      ingame.parallax.ocean
       ()
 
   val playership = ingame.playership

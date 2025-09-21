@@ -16,8 +16,8 @@ final case class GameConfiguration(
 
   def trimEmptyWords: GameConfiguration = copy(dictionary = dictionary.map(_.trim).filterNot(_.isEmpty).distinct)
 
-  def withRandomBackground(): GameConfiguration =
-    val chosenBackground = Background.values(scala.util.Random.nextInt(Background.values.length))
+  def withRandomBackground(maybeChosen: Option[Background]): GameConfiguration =
+    val chosenBackground = maybeChosen.getOrElse(Background.values(scala.util.Random.nextInt(Background.values.length)))
     copy(background = chosenBackground)
 
 }

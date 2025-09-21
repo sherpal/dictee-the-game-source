@@ -14,6 +14,9 @@ import be.doeraene.webcomponents.ui5.configkeys.ToastPlacement
 import be.doeraene.webcomponents.ui5.configkeys.LinkTarget
 import be.doeraene.webcomponents.ui5.configkeys.ButtonDesign
 import gamelogic.config.Background
+import scala.scalajs.LinkingInfo
+import org.scalajs.dom
+import scala.scalajs.js
 
 object App {
 
@@ -214,7 +217,17 @@ object App {
           case Success(fonts) =>
             storage.store(storedConfigKey, config)
 
-            val theGame = TheGame(fonts, config.trimEmptyWords.withRandomBackground())
+            val maybeChosenBackground =
+              if LinkingInfo.developmentMode then
+                dom.window
+                  .asInstanceOf[js.Dynamic]
+                  .selectDynamic("__background")
+                  .asInstanceOf[js.UndefOr[String]]
+                  .toOption
+                  .map(bgName => Background.valueOf(bgName))
+              else None
+
+            val theGame = TheGame(fonts, config.trimEmptyWords.withRandomBackground(maybeChosenBackground))
 
             theGame.launch(
               canvasId,
