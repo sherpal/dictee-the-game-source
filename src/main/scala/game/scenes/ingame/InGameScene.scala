@@ -186,23 +186,20 @@ class InGameScene(
   def ship(screenSize: Size, lastPlayerHit: Option[Seconds], time: Seconds) = {
     val asset = Asset.playership.sprite_player_spaceship_up_down
 
-    val material = lastPlayerHit.map(time.toDouble - _.toDouble).filter(_ < 2.0) match
-      case None => Asset.playership.sprite_player_spaceship_up_down.indigoBitmap
-      case Some(delta) =>
-        Asset.playership.sprite_player_spaceship_up_down.indigoImageEffects.withAlpha(
-          (1 + math.cos(3 * delta * math.Pi)) / 2
-        )
+    val alpha = lastPlayerHit
+      .map(time.toDouble - _.toDouble)
+      .filter(_ < 2.0)
+      .map(delta => (1 + math.cos(3 * delta * math.Pi)) / 2)
+      .getOrElse(1.0)
 
-    val clip =
-      Clip(
-        asset.width / 7,
-        asset.height,
-        ClipSheet(7, FPS(10)),
-        ClipPlayMode.default,
-        material
-      ).withPosition(game.gameutils.gameToLocal(-screenSize.width / 2)(Rectangle(screenSize)))
-        .withRef(Point(0, asset.height / 2))
-        .withScale(Vector2(0.3))
+    val clip = asset
+      .animatedGridIndigoGraphic(
+        game.gameutils.gameToLocal(-screenSize.width / 2)(Rectangle(screenSize)) + Point(60, 0),
+        Size(120, 50),
+        FPS(20),
+        Vector.fill(15)((0, 0)).toJSArray ++ (1 to 6).map((_, 0)),
+        alpha
+      )(time)
 
     Batch[SceneNode](clip)
   }
@@ -261,9 +258,9 @@ class InGameScene(
           asset.animatedGridIndigoGraphic(
             gamePosition(info.position),
             Size(200, 150),
-            time,
-            fps
-          )
+            fps,
+            alpha = 1.0
+          )(time - explosionTime)
         )
     )
 

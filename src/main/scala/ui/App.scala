@@ -204,7 +204,9 @@ object App {
         div(
           idAttr       := canvasId,
           maxHeight.px := 720,
-          maxWidth.px  := 1000
+          height.px    := 720,
+          maxWidth.px  := 1000,
+          width.px     := 1000
         ),
         child.maybe <-- gameStartedSignal.map(_ && isWindows).map(Option.when(_)(HelpWindowsIsBroken()))
       ),

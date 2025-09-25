@@ -1,14 +1,16 @@
 package assets
 
-import urldsl.language.dummyErrorImpl.*
+import gamelogic.config.Background
+import indigo.shared.materials.Material.Bitmap
 import urldsl.language.PathSegment
+import urldsl.language.dummyErrorImpl.*
 
-import scala.language.implicitConversions
 import scala.collection.mutable
+import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.JSConverters.*
 import scala.scalajs.js.annotation.JSImport
 import scala.util.Try
-import gamelogic.config.Background
 
 class Asset private (
     val path: PathSegment[Unit, ?],
@@ -67,14 +69,15 @@ class Asset private (
   def gridIndigoGraphic(
       position: indigo.Point,
       targetSize: indigo.Size,
-      gridCoord: (Int, Int)
+      gridCoord: (Int, Int),
+      alpha: Double = 1.0
   ) = indigo
     .Graphic(
       indigo.Rectangle(
         indigo.Point(gridCoord._1 * gridSize._1, gridCoord._2 * gridSize._2),
         indigo.Size(gridSize._1, gridSize._2)
       ),
-      indigoBitmap
+      if alpha < 1.0 then indigoImageEffects.withAlpha(alpha) else indigoBitmap
     )
     .withPosition(position)
     .withCrop(
@@ -89,15 +92,42 @@ class Asset private (
   def animatedGridIndigoGraphic(
       position: indigo.Point,
       targetSize: indigo.Size,
-      time: indigo.Seconds,
-      fps: indigo.FPS
-  ) =
-    val gridCellIndex = ((time.toDouble - math.floor(time.toDouble)) * fps.toDouble).toInt % gridCount
-    val gridCoord     = (gridCellIndex % grid._1, gridCellIndex / grid._1)
-    gridIndigoGraphic(
+      fps: indigo.FPS,
+      gridCoordsSequence: js.Array[(Int, Int)],
+      alpha: Double
+  ): indigo.Seconds => indigo.Graphic[?] =
+    val sequenceLength = gridCoordsSequence.length
+    val totalTime      = sequenceLength / fps.toDouble
+
+    (time: indigo.Seconds) => {
+      val timeInCycle  = time.toDouble % totalTime
+      val indexInCycle = (timeInCycle * sequenceLength).min(sequenceLength - 1).toInt
+
+      gridIndigoGraphic(
+        position,
+        targetSize,
+        gridCoordsSequence(indexInCycle),
+        alpha
+      )
+
+    }
+
+  def animatedGridIndigoGraphic(
+      position: indigo.Point,
+      targetSize: indigo.Size,
+      fps: indigo.FPS,
+      alpha: Double
+  ): indigo.Seconds => indigo.Graphic[?] =
+    val gridCoords = for
+      col <- 0 until grid._2
+      row <- 0 until grid._1
+    yield (row, col)
+    animatedGridIndigoGraphic(
       position,
       targetSize,
-      gridCoord
+      fps,
+      gridCoords.toJSArray,
+      alpha
     )
 
   private lazy val pathStr = "/" ++ path.createPart()
@@ -203,7 +233,8 @@ object Asset {
     object playership {
       private val playershipP = assetpack / "player-ship"
 
-      val sprite_player_spaceship_up_down = Asset(playershipP / "sprite_player_spaceship_up_down.png", 2450, 150)
+      val sprite_player_spaceship_up_down =
+        Asset(playershipP / "sprite_player_spaceship_up_down.png", 2450, 150, (7, 1))
     }
 
     object enemies {
