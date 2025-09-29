@@ -20,31 +20,6 @@ import scala.scalajs.js
 
 object App {
 
-  val dictation1 = Vector(
-    "colle",
-    "stylo",
-    "gomme",
-    "ciseaux",
-    "cahier",
-    "cartable",
-    "latte",
-    "trousse",
-    "crayon",
-    "livre"
-  )
-
-  val dictation2 = Vector(
-    "lundi",
-    "mardi",
-    "mercredi",
-    "jeudi",
-    "vendredi",
-    "samedi",
-    "dimanche"
-  )
-
-  val dictations = Vector(dictation1, dictation2)
-
   def apply(storage: LocalStorage)(using ExecutionContext): HtmlElement = {
     def fullAlphabet(dictionary: Vector[String]) =
       assets.fonts.alphabet ++ dictionary.flatten.flatMap(c => Vector(c.toLower, c.toUpper))
@@ -58,7 +33,7 @@ object App {
     val aboutDialogCloseBus  = new EventBus[Unit]
 
     val defaultConfig = GameConfiguration(
-      dictation1,
+      Dictations.dictation1,
       GameDifficulty.Rookie,
       Background.Desert
     )
@@ -139,7 +114,7 @@ object App {
               Text(
                 paddingTop    := "0.5em",
                 paddingBottom := "0.5em",
-                "Astuce: pour découvrir ton clavier, tu peux mettre les lettres de l'",
+                "Astuce : pour découvrir ton clavier, tu peux mettre les lettres de l'",
                 Link(
                   "alphabet",
                   _.events.onClick.preventDefault
@@ -147,9 +122,9 @@ object App {
                 ),
                 "."
               ),
-              dictations.zipWithIndex.map((dictation, index) =>
+              Dictations.all.zipWithIndex.map((dictation, index) =>
                 Text(
-                  "Entraine toi sur la ",
+                  "Entraîne-toi sur la ",
                   Link(s"dictée ${index + 1}", _.events.onClick.preventDefault.mapTo(dictation) --> dictionaryUpdater),
                   "."
                 )
@@ -159,7 +134,7 @@ object App {
                 "Essaie ",
                 Link(
                   "toutes les dictées",
-                  _.events.onClick.preventDefault.mapTo(dictations.flatten) --> dictionaryUpdater
+                  _.events.onClick.preventDefault.mapTo(Dictations.all.flatten) --> dictionaryUpdater
                 ),
                 " en même temps !"
               )
