@@ -20,3 +20,6 @@ then
 
 - `npm run preview`
 
+## Release
+
+Make a PR/push to `release`.

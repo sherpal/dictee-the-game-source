@@ -40,6 +40,20 @@ object Dictations {
     "décembre"
   )
 
-  val all = Vector(dictation1, dictation2, dictation3)
+  val dictation4 = Vector(
+    "zéro",
+    "un",
+    "deux",
+    "trois",
+    "quatre",
+    "cinq",
+    "six",
+    "sept",
+    "huit",
+    "neuf",
+    "dix"
+  )
+
+  val all = Vector(dictation1, dictation2, dictation3, dictation4)
 
 }
