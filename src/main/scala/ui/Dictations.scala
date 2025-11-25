@@ -54,6 +54,18 @@ object Dictations {
     "dix"
   )
 
-  val all = Vector(dictation1, dictation2, dictation3, dictation4)
+  val dictation5 = Vector(
+    "avec",
+    "pour",
+    "dans",
+    "comme",
+    "en",
+    "mais",
+    "par",
+    "pas",
+    "sur"
+  )
+
+  val all = Vector(dictation1, dictation2, dictation3, dictation4, dictation5)
 
 }
