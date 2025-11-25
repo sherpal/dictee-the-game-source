@@ -8,7 +8,7 @@ final case class GameConfiguration(
     background: Background
 ) derives Codec {
 
-  val enemySpeedMultiplier = difficulty match
+  val enemySpeedMultiplier: Double = difficulty match
     case GameDifficulty.Rookie          => 1.0
     case GameDifficulty.P2B             => 2.0
     case GameDifficulty.Parent          => 10.0
